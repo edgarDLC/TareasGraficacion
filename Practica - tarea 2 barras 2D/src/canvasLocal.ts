@@ -1,4 +1,8 @@
-
+/*
+  Se calcula y ajusta el espacio entre cada barra.
+  Solo admite un maxima de 9 elementos, que evitan la superposición de las barras.
+  En caso de haber mas de 9 elementos, muestra una advertencia 
+*/
 export class CanvasLocal {
   //atributos
   protected graphics: CanvasRenderingContext2D;
@@ -71,7 +75,7 @@ export class CanvasLocal {
     return res;
   }
 
-  //Método para rellenar las areas(cada area cuenta con 4 vertices)
+  //Método para rellenar las areas(cada area cuenta con 4 vertices) de color
   rellenar(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number, color: string, strokeColor: string = 'black'){
     const rellenoStryleActual = this.graphics.fillStyle; //Estilos actuales
     const trazoStryleActual = this.graphics.strokeStyle;
@@ -93,6 +97,7 @@ export class CanvasLocal {
     this.graphics.strokeStyle = trazoStryleActual;
   }
 
+  //Devuelve un color oscuro para dar profuncidad
   colorOscuro(color: string, percent: number): string {
     const colorValues: Record<string, string> = {
         'magenta': 'rgb(139, 0, 139)',    // Magenta oscuro
@@ -185,6 +190,20 @@ export class CanvasLocal {
     
   }
 
+  advertenciaTamano(datos: number){
+    const advertencia = document.getElementById("advertencia");
+    if(datos > 9){
+      if(advertencia){
+        advertencia.textContent = "Solo se permiten maximo 9 elementos para graficar. No se mostraran los elementos extra.";
+        advertencia.style.display = "block";
+        console.warn("Solo se permiten maximo 9 elementos para graficar. No se mostraran los elementos extra.");
+      }
+    }else{
+      advertencia.style.display = "none";
+    }
+  }
+
+
   paint() {
     // Borde del canvas
     this.drawLine(0, 0, 0, 480); // Izquierda
@@ -192,9 +211,16 @@ export class CanvasLocal {
     this.drawLine(640, 0, 640, 480); // Derecha
     this.drawLine(640, 480, 0, 480); // Abajo
 
+    let h: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     //let h: number[] = [20, 100, 160, 420];
-    let h: number[] = [1150, 1780, 860, 1260, 1500, 2000];
+    //let h: number[] = [1150, 1780, 1260, 1500, 2000];
     //let h: number[] = [27, 10, 16, 30, 50, 73, 13];
+
+    let datos= h.length; 
+    this.advertenciaTamano(datos);
+    if(h.length>9) //se limita a 9 elementos
+      h = h.slice(0, 9);
+
     let maxEsc: number;
     let colors: string[]= ['magenta', 'red', 'green', 'blue'];
 
